@@ -1,9 +1,13 @@
 package com.example.guia_22.data.local
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "usuarios")
+@Entity(
+    tableName = "usuarios",
+    indices = [Index(value = ["correo"], unique = true)]
+)
 data class UsuarioEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,

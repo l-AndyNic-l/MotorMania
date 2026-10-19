@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
@@ -64,15 +65,15 @@ fun MainScreen(
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("buscar-producto")},
-                    icon = { Icon(Icons.Default.Edit, contentDescription = "Editar") },
-                    label = { Text("Editar Productos") }
+                    onClick = {navController.navigate("registrar-producto")},
+                    icon = { Icon(Icons.Default.AddBox, contentDescription = "Agregar") },
+                    label = { Text("Agregar") }
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("inicio-sesion")},
-                    icon = { Icon(Icons.Default.ExitToApp, contentDescription = "Logout") },
-                    label = { Text("Logout") }
+                    onClick = {navController.navigate("editar-producto")},
+                    icon = { Icon(Icons.Default.Edit, contentDescription = "Editar") },
+                    label = { Text("Editar") }
                 )
             }
         }

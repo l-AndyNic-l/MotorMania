@@ -124,20 +124,6 @@ class UsuarioViewModel(app: Application): AndroidViewModel(app) {
         return !hayErrores
     }
 
-    fun guardar(onListo: () -> Unit) {
-        val a = _estado.value
-
-        viewModelScope.launch {
-            try {
-                UsuarioRepository(dao).guardar(a)
-                onListo()
-
-            } catch (e: Exception) {
-                println("Error de Ejecución: ${e.message}")
-            }
-        }
-    }
-
     fun limpiarCampos() {
         _estado.update {
             it.copy(
@@ -152,21 +138,17 @@ class UsuarioViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
-    /*fun obtenerUltimo() {
+    fun guardar(onListo: () -> Unit) {
+        val a = _estado.value
+
         viewModelScope.launch {
-            dao.obtenerUltimo().collect { usuario ->
-                usuario?.let { u ->
-                    _estado.update {
-                        it.copy(
-                            nombre = u.nombre,
-                            correo = u.correo,
-                            clave = u.clave,
-                            direccion = u.direccion
-                        )
-                    }
-                }
+            try {
+                UsuarioRepository(dao).guardar(a)
+                onListo()
+
+            } catch (e: Exception) {
+                println("Error de Ejecución: ${e.message}")
             }
         }
-    }*/
-
+    }
 }

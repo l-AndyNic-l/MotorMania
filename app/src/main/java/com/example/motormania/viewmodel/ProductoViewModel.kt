@@ -2,14 +2,19 @@ package com.example.motormania.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.motormania.data.local.ProductoDataBase
 import com.example.motormania.model.ProductoErrores
 import com.example.motormania.model.ProductoUiState
+import com.example.motormania.repository.ProductoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class ProductoViewModel(app: Application): AndroidViewModel(app) {
 
+    private val dao = ProductoDataBase.getDataBase(app).productoDao()
     private val _estado = MutableStateFlow(ProductoUiState())
     val estado: StateFlow<ProductoUiState> = _estado
 
@@ -76,6 +81,23 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
+    fun onUpdateGuardando(valor: Boolean) {
+        _estado.update {
+            it.copy(
+                guardando = valor,
+            )
+        }
+    }
+
+    fun onUpdateGuardadoExitoso(valor: Boolean) {
+        _estado.update {
+            it.copy(
+                guardadoExitosamente = valor,
+            )
+
+        }
+    }
+
     fun validarFormulario(): Boolean {
         val estadoActual = _estado.value
 
@@ -106,5 +128,36 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
         ).isNotEmpty()
 
         return !hayErrores
+    }
+
+    fun limpiarCampos() {
+        _estado.update {
+            it.copy(
+                codigo = "",
+                img = "",
+                nombre = "",
+                categoria = "",
+                precio = "",
+                cantidad = "",
+                stockMinimo = "",
+                guardando = false,
+                guardadoExitosamente = false
+            )
+        }
+    }
+
+    fun guardar() {
+        val a = _estado.value
+        onUpdateGuardando(true)
+
+        viewModelScope.launch {
+            try {
+                ProductoRepository(dao).guardar(a)
+                onUpdateGuardadoExitoso(true)
+
+            } catch (e: Exception) {
+                println("Error de Ejecución: ${e.message}")
+            }
+        }
     }
 }

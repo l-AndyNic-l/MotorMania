@@ -15,12 +15,12 @@ interface UsuarioDao {
     @Query("SELECT * FROM usuarios")
     suspend fun obtenerTodos(): List<UsuarioEntity>
 
-    @Query("SELECT * FROM usuarios WHERE id = :cod LIMIT 1")
-    suspend fun obtenerPorId(cod: Int): UsuarioEntity?
+    @Query("SELECT * FROM usuarios WHERE correo = :cor LIMIT 1")
+    suspend fun obtenerPorId(cor: String): UsuarioEntity?
 
     @Update
-    suspend fun actualizar(producto: UsuarioEntity)
+    suspend fun actualizar(usuario: UsuarioEntity)
 
     @Delete
-    suspend fun eliminar(producto: UsuarioEntity)
+    suspend fun eliminar(usuario: UsuarioEntity)
 }

@@ -23,8 +23,8 @@ class UsuarioRepository(private val dao: UsuarioDao) {
     suspend fun obtenerTodos(): List<UsuarioUiState> =
         dao.obtenerTodos().map { it.toUiState() }
 
-    suspend fun obtenerPorId(cod: Int): UsuarioUiState? =
-        dao.obtenerPorId(cod)?.toUiState()
+    suspend fun obtenerPorId(correo: String): UsuarioUiState? =
+        dao.obtenerPorId(correo)?.toUiState()
 
     suspend fun actualizar(usuario: UsuarioUiState) =
         dao.actualizar(usuario.toEntity())
