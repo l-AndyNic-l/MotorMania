@@ -78,7 +78,7 @@ fun EditarScreen (
                 )
                 NavigationBarItem(
                     selected = true,
-                    onClick = {navController.navigate("editar-producto")},
+                    onClick = {navController.navigate("lista-productos-editar")},
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Editar") },
                     label = { Text("Editar") }
                 )
