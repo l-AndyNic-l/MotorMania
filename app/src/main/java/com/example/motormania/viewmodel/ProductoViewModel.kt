@@ -197,4 +197,36 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
             }
         }
     }
+
+    fun obtenerProducto(codigo: String) {
+        viewModelScope.launch {
+            try {
+                val producto = ProductoRepository(dao).obtenerPorId(codigo.toInt())
+
+                if (producto != null) {
+                    _estado.value = producto.copy()
+
+                } else {
+                    println("Producto ${codigo} no encontrado")
+                }
+
+            } catch (e: Exception) {
+                println("Error al obtener producto: ${e.message}")
+            }
+        }
+    }
+
+    fun actualizarProducto() {
+        val a = _estado.value
+
+        viewModelScope.launch {
+            try {
+                ProductoRepository(dao).actualizar(a)
+                onUpdateGuardadoExitoso(true)
+
+            } catch (e: Exception) {
+                println("Error de Ejecución: ${e.message}")
+            }
+        }
+    }
 }

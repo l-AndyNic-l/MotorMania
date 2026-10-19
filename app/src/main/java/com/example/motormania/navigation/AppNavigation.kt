@@ -5,7 +5,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
+import com.example.motormania.view.EditarScreen
 import com.example.motormania.view.InicioSecionScreen
+import com.example.motormania.view.ListaProductosEditarScreen
 import com.example.motormania.view.ListaProductosScreen
 import com.example.motormania.view.MainScreen
 import com.example.motormania.view.ProductoScreen
@@ -54,6 +56,21 @@ fun AppNavigation() {
 
         composable(route = "lista-productos") {
             ListaProductosScreen(
+                navController,
+                productoViewModel
+            )
+        }
+
+        composable(route = "lista-productos-editar") {
+            ListaProductosEditarScreen(
+                navController,
+                productoViewModel
+            )
+        }
+
+        composable(route = "editar-producto") {
+            EditarScreen(
+                navController,
                 productoViewModel
             )
         }

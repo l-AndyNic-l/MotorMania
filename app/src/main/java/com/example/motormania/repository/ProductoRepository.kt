@@ -1,7 +1,5 @@
 package com.example.motormania.repository
 
-import com.example.guia_22.data.local.UsuarioEntity
-import com.example.guia_22.model.UsuarioUiState
 import com.example.motormania.data.local.ProductoDao
 import com.example.motormania.data.local.ProductoEntity
 import com.example.motormania.model.ProductoUiState

@@ -48,7 +48,7 @@ fun ProductoScreen (
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(text = "MotorMania") },
+                title = { Text(text = "MotorMania - Admin") },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -78,7 +78,7 @@ fun ProductoScreen (
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("editar-producto")},
+                    onClick = {navController.navigate("lista-productos-editar")},
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Editar") },
                     label = { Text("Editar") }
                 )
@@ -108,7 +108,7 @@ fun ProductoScreen (
             OutlinedTextField(
                 value = estado.codigo,
                 onValueChange = viewModel::onCodigoChange,
-                label = { Text(text = "Código (ej: 001):") },
+                label = { Text(text = "Código (ej: 123):") },
                 isError = estado.errores.codigo != null,
                 supportingText = {
                     estado.errores.codigo?.let {
