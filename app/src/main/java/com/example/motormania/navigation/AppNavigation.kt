@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import com.example.motormania.view.InicioSecionScreen
+import com.example.motormania.view.ListaProductosScreen
 import com.example.motormania.view.MainScreen
 import com.example.motormania.view.ProductoScreen
 import com.example.motormania.view.RegistroScreen
@@ -48,6 +49,12 @@ fun AppNavigation() {
         composable(route = "inicio") {
             MainScreen(
                 navController
+            )
+        }
+
+        composable(route = "lista-productos") {
+            ListaProductosScreen(
+                productoViewModel
             )
         }
     }

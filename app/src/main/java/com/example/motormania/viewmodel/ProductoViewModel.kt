@@ -18,6 +18,9 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
     private val _estado = MutableStateFlow(ProductoUiState())
     val estado: StateFlow<ProductoUiState> = _estado
 
+    private val _productos = MutableStateFlow<List<ProductoUiState>>(emptyList())
+    val productos: StateFlow<List<ProductoUiState>> = _productos
+
     fun onCodigoChange(valor: String) {
         _estado.update {
             it.copy(
@@ -101,23 +104,52 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
     fun validarFormulario(): Boolean {
         val estadoActual = _estado.value
 
+        val codigo = estadoActual.codigo.toIntOrNull()
+        val precio = estadoActual.precio.toIntOrNull()
+        val cantidad = estadoActual.cantidad.toIntOrNull()
+        val stockMinimo = estadoActual.stockMinimo.toIntOrNull()
+
         val errores = ProductoErrores(
-            codigo = if (estadoActual.codigo.toInt() <= 0) "Código no válido" else null,
-            img = if (estadoActual.img.isBlank()) "Campo obligatorio" else null,
-            nombre = if (estadoActual.nombre.isBlank()) "Campo obligatorio" else null,
-            categoria = if (estadoActual.categoria.isBlank()) "Campo obligatorio" else null,
-            precio = if (estadoActual.precio.toInt() < 0) "Debe ser un monto válido" else null,
-            cantidad = if (estadoActual.cantidad.toInt() < 0) "Debe ser una cantidad válida" else null,
-            stockMinimo = if (estadoActual.stockMinimo.toInt() < 0) "Debe ser un stock mínimo válido" else null
+            codigo = when {
+                estadoActual.codigo.isBlank() -> "Campo obligatorio"
+                codigo == null || codigo <= 0 -> "Código no válido"
+                else -> null
+            },
+
+            img = if (estadoActual.img.isBlank())
+                "Campo obligatorio" else null,
+
+            nombre = if (estadoActual.nombre.isBlank())
+                "Campo obligatorio" else null,
+
+            categoria = if (estadoActual.categoria.isBlank())
+                "Campo obligatorio" else null,
+
+            precio = when {
+                estadoActual.precio.isBlank() -> "Campo obligatorio"
+                precio == null || precio < 0 -> "Debe ser un monto válido"
+                else -> null
+            },
+
+            cantidad = when {
+                estadoActual.cantidad.isBlank() -> "Campo obligatorio"
+                cantidad == null || cantidad < 0 -> "Debe ser una cantidad válida"
+                else -> null
+            },
+
+            stockMinimo = when {
+                estadoActual.stockMinimo.isBlank() -> "Campo obligatorio"
+                stockMinimo == null || stockMinimo < 0 ->
+                    "Debe ser un stock mínimo válido"
+                else -> null
+            }
         )
 
         _estado.update {
-            it.copy(
-                errores = errores
-            )
+            it.copy(errores = errores)
         }
 
-        val hayErrores = listOfNotNull(
+        return listOfNotNull(
             errores.codigo,
             errores.img,
             errores.nombre,
@@ -125,9 +157,7 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
             errores.precio,
             errores.cantidad,
             errores.stockMinimo
-        ).isNotEmpty()
-
-        return !hayErrores
+        ).isEmpty()
     }
 
     fun limpiarCampos() {
@@ -139,16 +169,13 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
                 categoria = "",
                 precio = "",
                 cantidad = "",
-                stockMinimo = "",
-                guardando = false,
-                guardadoExitosamente = false
+                stockMinimo = ""
             )
         }
     }
 
     fun guardar() {
         val a = _estado.value
-        onUpdateGuardando(true)
 
         viewModelScope.launch {
             try {
@@ -157,6 +184,16 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
 
             } catch (e: Exception) {
                 println("Error de Ejecución: ${e.message}")
+            }
+        }
+    }
+
+    fun obtenerProductos() {
+        viewModelScope.launch {
+            try {
+                _productos.value = ProductoRepository(dao).obtenerTodos()
+            } catch (e: Exception) {
+                println("Error al obtener productos: ${e.message}")
             }
         }
     }
