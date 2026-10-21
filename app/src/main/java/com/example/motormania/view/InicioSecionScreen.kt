@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -27,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.motormania.viewmodel.LoginViewModel
-import com.example.motormania.viewmodel.UsuarioViewModel
 
 @Composable
 fun InicioSecionScreen (
@@ -91,8 +91,12 @@ fun InicioSecionScreen (
         Button(
             onClick = {
                 if (viewModel.validarFormulario()) {
-                    navController.navigate("inicio")
-                    viewModel.limpiarCampos()
+                    viewModel.iniciarSesion()
+
+                    if (estado.logeado == "LOGEADO") {
+                        navController.navigate("inicio")
+                        viewModel.limpiarCampos()
+                    }
                 }
             },
             modifier = Modifier
@@ -122,6 +126,54 @@ fun InicioSecionScreen (
                     fontWeight = FontWeight.Bold
                 )
             }
+        }
+
+        if (estado.logeado == "CREDENCIALES ERRONEAS") {
+            AlertDialog(
+                onDismissRequest = {
+                    viewModel.onLogeadoChange("")
+                },
+                title = {
+                    Text("¡Credenciales Erroneas!")
+                },
+                text = {
+                    Text("El correo y la contraseña no coinciden")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.limpiarCampos()
+                            viewModel.onLogeadoChange("")
+                        }
+                    ) {
+                        Text("Aceptar")
+                    }
+                }
+            )
+        }
+
+        if (estado.logeado == "NO ENCONTRADO") {
+            AlertDialog(
+                onDismissRequest = {
+                    viewModel.onLogeadoChange("")
+                },
+                title = {
+                    Text("¡Usuario No Registrado!")
+                },
+                text = {
+                    Text("No se encontraron registros de este correo")
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            viewModel.limpiarCampos()
+                            viewModel.onLogeadoChange("")
+                        }
+                    ) {
+                        Text("Aceptar")
+                    }
+                }
+            )
         }
     }
 }

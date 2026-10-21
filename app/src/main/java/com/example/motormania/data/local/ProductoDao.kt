@@ -1,7 +1,6 @@
 package com.example.motormania.data.local
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -21,6 +20,6 @@ interface ProductoDao {
     @Update
     suspend fun actualizar(producto: ProductoEntity)
 
-    @Delete
-    suspend fun eliminar(producto: ProductoEntity)
+    @Query("DELETE FROM productos WHERE codigo = :codigo")
+    suspend fun eliminarPorCodigo(codigo: Int)
 }

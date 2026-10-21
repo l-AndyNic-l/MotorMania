@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
@@ -16,6 +17,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -52,7 +54,22 @@ fun ProductoScreen (
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                ),
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("inicio-sesion") {
+                                popUpTo(navController.graph.id) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "Cerrar sesión"
+                        )
+                    }
+                }
             )
         },
 
@@ -60,25 +77,37 @@ fun ProductoScreen (
             NavigationBar {
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("inicio")},
+                    onClick = {
+                        navController.navigate("inicio")
+                        viewModel.limpiarCampos()
+                    },
                     icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
                     label = { Text("Inicio") }
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("lista-productos")},
+                    onClick = {
+                        navController.navigate("lista-productos")
+                        viewModel.limpiarCampos()
+                    },
                     icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Productos") },
                     label = { Text("Productos") }
                 )
                 NavigationBarItem(
                     selected = true,
-                    onClick = {navController.navigate("registrar-producto")},
+                    onClick = {
+                        navController.navigate("registrar-producto")
+                        viewModel.limpiarCampos()
+                    },
                     icon = { Icon(Icons.Default.AddBox, contentDescription = "Agregar") },
                     label = { Text("Agregar") }
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("lista-productos-editar")},
+                    onClick = {
+                        navController.navigate("lista-productos-editar")
+                        viewModel.limpiarCampos()
+                    },
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Editar") },
                     label = { Text("Editar") }
                 )

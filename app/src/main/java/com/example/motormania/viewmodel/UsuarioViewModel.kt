@@ -2,13 +2,10 @@ package com.example.motormania.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.guia_22.data.local.UsuarioDataBase
-import com.example.guia_22.data.local.UsuarioEntity
 import com.example.guia_22.model.UsuarioErrores
 import com.example.guia_22.model.UsuarioUiState
+import com.example.motormania.data.local.AppDataBase
 import com.example.motormania.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class UsuarioViewModel(app: Application): AndroidViewModel(app) {
 
-    private val dao = UsuarioDataBase.getDataBase(app).usuarioDao()
+    private val dao = AppDataBase.getDataBase(app).usuarioDao()
     private val _estado = MutableStateFlow(UsuarioUiState())
     val estado: StateFlow<UsuarioUiState> = _estado
 

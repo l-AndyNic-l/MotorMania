@@ -3,7 +3,7 @@ package com.example.motormania.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.motormania.data.local.ProductoDataBase
+import com.example.motormania.data.local.AppDataBase
 import com.example.motormania.model.ProductoErrores
 import com.example.motormania.model.ProductoUiState
 import com.example.motormania.repository.ProductoRepository
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 
 class ProductoViewModel(app: Application): AndroidViewModel(app) {
 
-    private val dao = ProductoDataBase.getDataBase(app).productoDao()
+    private val dao = AppDataBase.getDataBase(app).productoDao()
     private val _estado = MutableStateFlow(ProductoUiState())
     val estado: StateFlow<ProductoUiState> = _estado
 
@@ -226,6 +226,18 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
 
             } catch (e: Exception) {
                 println("Error de Ejecución: ${e.message}")
+            }
+        }
+    }
+
+    fun eliminarProducto(codigo: String) {
+        viewModelScope.launch {
+            try {
+                ProductoRepository(dao).eliminar(codigo.toInt())
+                obtenerProductos()
+
+            } catch (e: Exception) {
+                println("Error al obtener producto: ${e.message}")
             }
         }
     }

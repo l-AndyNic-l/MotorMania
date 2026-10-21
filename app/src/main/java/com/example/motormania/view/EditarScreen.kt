@@ -60,25 +60,37 @@ fun EditarScreen (
             NavigationBar {
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("inicio")},
+                    onClick = {
+                        navController.navigate("inicio")
+                        viewModel.limpiarCampos()
+                    },
                     icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
                     label = { Text("Inicio") }
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("lista-productos")},
+                    onClick = {
+                        navController.navigate("lista-productos")
+                        viewModel.limpiarCampos()
+                    },
                     icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Productos") },
                     label = { Text("Productos") }
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("registrar-producto")},
+                    onClick = {
+                        navController.navigate("registrar-producto")
+                        viewModel.limpiarCampos()
+                    },
                     icon = { Icon(Icons.Default.AddBox, contentDescription = "Agregar") },
                     label = { Text("Agregar") }
                 )
                 NavigationBarItem(
                     selected = true,
-                    onClick = {navController.navigate("lista-productos-editar")},
+                    onClick = {
+                        navController.navigate("lista-productos-editar")
+                        viewModel.limpiarCampos()
+                    },
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Editar") },
                     label = { Text("Editar") }
                 )

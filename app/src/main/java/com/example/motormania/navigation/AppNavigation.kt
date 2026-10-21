@@ -11,9 +11,11 @@ import com.example.motormania.view.ListaProductosEditarScreen
 import com.example.motormania.view.ListaProductosScreen
 import com.example.motormania.view.MainScreen
 import com.example.motormania.view.ProductoScreen
+import com.example.motormania.view.QrScannerScreen
 import com.example.motormania.view.RegistroScreen
 import com.example.motormania.viewmodel.LoginViewModel
 import com.example.motormania.viewmodel.ProductoViewModel
+import com.example.motormania.viewmodel.QrViewModel
 import com.example.motormania.viewmodel.UsuarioViewModel
 
 @Composable
@@ -22,6 +24,7 @@ fun AppNavigation() {
     val usuarioViewModel: UsuarioViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
     val productoViewModel: ProductoViewModel = viewModel()
+    val qrViewModel: QrViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -72,6 +75,15 @@ fun AppNavigation() {
             EditarScreen(
                 navController,
                 productoViewModel
+            )
+        }
+
+        composable("escaner-qr") {
+            QrScannerScreen(
+                viewModel = qrViewModel,
+                onBack = { navController.popBackStack() },
+                productoViewModel,
+                navController
             )
         }
     }

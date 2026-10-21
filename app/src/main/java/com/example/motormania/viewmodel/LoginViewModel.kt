@@ -2,15 +2,19 @@ package com.example.motormania.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import com.example.guia_22.model.UsuarioErrores
+import androidx.lifecycle.viewModelScope
+import com.example.motormania.data.local.AppDataBase
 import com.example.motormania.model.LoginErrores
 import com.example.motormania.model.LoginUiState
+import com.example.motormania.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class LoginViewModel(app: Application): AndroidViewModel(app) {
 
+    private val dao = AppDataBase.getDataBase(app).usuarioDao()
     private val _estado = MutableStateFlow(LoginUiState())
     val estado: StateFlow<LoginUiState> = _estado
 
@@ -29,6 +33,14 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
             it.copy(
                 clave = valor,
                 errores = it.errores.copy(clave = null)
+            )
+        }
+    }
+
+    fun onLogeadoChange(valor: String) {
+        _estado.update {
+            it.copy(
+                logeado = valor
             )
         }
     }
@@ -61,6 +73,30 @@ class LoginViewModel(app: Application): AndroidViewModel(app) {
                 correo = "",
                 clave = ""
             )
+        }
+    }
+
+    fun iniciarSesion() {
+        val a = _estado.value
+
+        viewModelScope.launch {
+            try {
+                val usuario = UsuarioRepository(dao).obtenerPorCorreo(a.correo)
+
+                if (usuario != null) {
+                    if (usuario.clave == a.clave) {
+                        onLogeadoChange("LOGEADO")
+
+                    } else {
+                        onLogeadoChange("CREDENCIALES ERRONEAS")
+                    }
+                } else {
+                    onLogeadoChange("NO ENCONTRADO")
+                }
+
+            } catch (e: Exception) {
+                println("Error al obtener producto: ${e.message}")
+            }
         }
     }
 }

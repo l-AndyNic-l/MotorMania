@@ -28,8 +28,8 @@ class ProductoRepository(private val dao: ProductoDao) {
     suspend fun actualizar(producto: ProductoUiState) =
         dao.actualizar(producto.toEntity())
 
-    suspend fun eliminar(producto: ProductoUiState) =
-        dao.eliminar(producto.toEntity())
+    suspend fun eliminar(codigo: Int) =
+        dao.eliminarPorCodigo(codigo)
 
 }
 
