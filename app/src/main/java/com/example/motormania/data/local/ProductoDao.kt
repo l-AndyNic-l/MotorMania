@@ -14,6 +14,12 @@ interface ProductoDao {
     @Query("SELECT * FROM productos")
     suspend fun obtenerTodos(): List<ProductoEntity>
 
+    @Query("SELECT * FROM productos WHERE cantidad <= stockMinimo")
+    suspend fun obtenerTodosStockMinimo(): List<ProductoEntity>
+
+    @Query("SELECT * FROM productos WHERE zona = :zona AND repisa = :repisa AND estante = :estante")
+    suspend fun obtenerPorUbicacionExacta(zona: String, repisa: Int, estante: Int): List<ProductoEntity>
+
     @Query("SELECT * FROM productos WHERE codigo = :id LIMIT 1")
     suspend fun obtenerPorId(id: Int): ProductoEntity?
 

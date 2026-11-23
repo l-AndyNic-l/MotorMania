@@ -13,5 +13,9 @@ data class ProductoEntity (
     val categoria: String,
     val precio: Int,
     val cantidad: Int,
-    val stockMinimo: Int
+    val stockMinimo: Int,
+    val stockObjetivo: Int,
+    val zona: String,
+    val repisa: Int,
+    val estante: Int
 )

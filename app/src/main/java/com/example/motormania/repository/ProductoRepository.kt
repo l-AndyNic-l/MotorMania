@@ -6,21 +6,17 @@ import com.example.motormania.model.ProductoUiState
 
 class ProductoRepository(private val dao: ProductoDao) {
 
-    suspend fun guardar(producto: ProductoUiState) {
-        val entity = ProductoEntity(
-            codigo = producto.codigo.toInt(),
-            img = producto.img,
-            nombre = producto.nombre,
-            categoria = producto.categoria,
-            precio = producto.precio.toInt(),
-            cantidad = producto.cantidad.toInt(),
-            stockMinimo = producto.stockMinimo.toInt()
-        )
-        dao.insertar(entity)
-    }
+    suspend fun guardar(producto: ProductoUiState) =
+        dao.insertar(producto.toEntity())
 
     suspend fun obtenerTodos(): List<ProductoUiState> =
         dao.obtenerTodos().map { it.toUiState() }
+
+    suspend fun obtenerTodosStockMinimo(): List<ProductoUiState> =
+        dao.obtenerTodosStockMinimo().map { it.toUiState() }
+
+    suspend fun obtenerPorUbicacionExacta(zona: String, repisa: Int, estante: Int): List<ProductoUiState> =
+        dao.obtenerPorUbicacionExacta(zona, repisa, estante).map { it.toUiState() }
 
     suspend fun obtenerPorId(codigo: Int): ProductoUiState? =
         dao.obtenerPorId(codigo)?.toUiState()
@@ -40,7 +36,11 @@ private fun ProductoEntity.toUiState() = ProductoUiState(
     categoria = categoria,
     precio = precio.toString(),
     cantidad = cantidad.toString(),
-    stockMinimo = stockMinimo.toString()
+    stockMinimo = stockMinimo.toString(),
+    stockObjetivo = stockObjetivo.toString(),
+    zona = zona,
+    repisa = repisa.toString(),
+    estante = estante.toString()
 )
 
 private fun ProductoUiState.toEntity() = ProductoEntity(
@@ -50,5 +50,9 @@ private fun ProductoUiState.toEntity() = ProductoEntity(
     categoria = categoria,
     precio = precio.toInt(),
     cantidad = cantidad.toInt(),
-    stockMinimo = stockMinimo.toInt()
+    stockMinimo = stockMinimo.toInt(),
+    stockObjetivo = stockMinimo.toInt(),
+    zona = zona.uppercase(),
+    repisa = repisa.toInt(),
+    estante = estante.toInt()
 )

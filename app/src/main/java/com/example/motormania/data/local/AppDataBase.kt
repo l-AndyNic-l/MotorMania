@@ -8,7 +8,13 @@ import com.example.guia_22.data.local.UsuarioDao
 import com.example.guia_22.data.local.UsuarioEntity
 
 @Database(
-    entities = [UsuarioEntity::class, ProductoEntity::class],
+    entities = [
+        UsuarioEntity::class,
+        ProductoEntity::class,
+        VentaEntity::class,
+        ReposicionEntity::class,
+        ConsumoEntity::class
+    ],
     version = 1,
     exportSchema = false
 )
@@ -16,6 +22,12 @@ abstract class AppDataBase : RoomDatabase() {
 
     abstract fun usuarioDao(): UsuarioDao
     abstract fun productoDao(): ProductoDao
+
+    abstract fun ventaDao(): VentaDao
+
+    abstract fun reposicionDao(): ReposicionDao
+
+    abstract fun consumoDao(): ConsumoDao
 
     companion object {
         @Volatile

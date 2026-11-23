@@ -1,4 +1,4 @@
-package com.example.motormania.view
+package com.example.motormania.view.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.motormania.R
 import com.example.motormania.viewmodel.LoginViewModel
 
 @Composable
@@ -54,7 +55,7 @@ fun InicioSecionScreen (
         )
 
         Image(
-            painter = painterResource(com.example.motormania.R.drawable.logo),
+            painter = painterResource(R.drawable.logo),
             contentDescription = "Logo Empresa",
             modifier = Modifier
                 .size(120.dp)

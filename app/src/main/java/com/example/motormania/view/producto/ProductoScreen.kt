@@ -1,6 +1,7 @@
-package com.example.motormania.view
+package com.example.motormania.view.producto
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,14 +9,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Inventory2
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -38,7 +41,7 @@ import com.example.motormania.viewmodel.ProductoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarScreen (
+fun ProductoScreen (
     navController: NavController,
     viewModel: ProductoViewModel
 ) {
@@ -48,11 +51,48 @@ fun EditarScreen (
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(text = "MotorMania - Admin") },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("inicio") {
+                                popUpTo("inicio") { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Inicio"
+                        )
+                    }
+                },
+                title = {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "MotorMania - Movimientos")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
+                ),
+                actions = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("inicio-sesion") {
+                                popUpTo(navController.graph.id) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Logout,
+                            contentDescription = "Cerrar sesión"
+                        )
+                    }
+                }
             )
         },
 
@@ -60,37 +100,19 @@ fun EditarScreen (
             NavigationBar {
                 NavigationBarItem(
                     selected = false,
-                    onClick = {
-                        navController.navigate("inicio")
-                        viewModel.limpiarCampos()
-                    },
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
-                    label = { Text("Inicio") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        navController.navigate("lista-productos")
-                        viewModel.limpiarCampos()
-                    },
-                    icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Productos") },
+                    onClick = { navController.navigate("lista-productos") },
+                    icon = { Icon(Icons.Default.Inventory2, contentDescription = "Productos") },
                     label = { Text("Productos") }
                 )
                 NavigationBarItem(
-                    selected = false,
-                    onClick = {
-                        navController.navigate("registrar-producto")
-                        viewModel.limpiarCampos()
-                    },
+                    selected = true,
+                    onClick = { navController.navigate("registrar-producto") },
                     icon = { Icon(Icons.Default.AddBox, contentDescription = "Agregar") },
                     label = { Text("Agregar") }
                 )
                 NavigationBarItem(
-                    selected = true,
-                    onClick = {
-                        navController.navigate("lista-productos-editar")
-                        viewModel.limpiarCampos()
-                    },
+                    selected = false,
+                    onClick = { navController.navigate("lista-productos-editar") },
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Editar") },
                     label = { Text("Editar") }
                 )
@@ -108,7 +130,7 @@ fun EditarScreen (
             verticalArrangement = Arrangement.Top
         ) {
             Text(
-                text = "Actualizar Producto",
+                text = "Registro Producto",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
@@ -208,17 +230,69 @@ fun EditarScreen (
                 modifier = Modifier.fillMaxWidth()
             )
 
+            OutlinedTextField(
+                value = estado.stockObjetivo,
+                onValueChange = viewModel::onStockObjetivo,
+                label = { Text(text = "Stock Objetivo:") },
+                isError = estado.errores.stockObjetivo != null,
+                supportingText = {
+                    estado.errores.stockObjetivo?.let {
+                        Text(it, color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = estado.zona,
+                onValueChange = viewModel::onZonaChange,
+                label = { Text(text = "Zona:") },
+                isError = estado.errores.zona != null,
+                supportingText = {
+                    estado.errores.zona?.let {
+                        Text(it, color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = estado.repisa,
+                onValueChange = viewModel::onRepisaChange,
+                label = { Text(text = "Nª Repisa:") },
+                isError = estado.errores.repisa != null,
+                supportingText = {
+                    estado.errores.repisa?.let {
+                        Text(it, color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            OutlinedTextField(
+                value = estado.estante,
+                onValueChange = viewModel::onEstanteChange,
+                label = { Text(text = "Nª Estante:") },
+                isError = estado.errores.estante != null,
+                supportingText = {
+                    estado.errores.estante?.let {
+                        Text(it, color = MaterialTheme.colorScheme.error)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
             Button(
                 onClick = {
                     if (viewModel.validarFormulario()) {
-                        viewModel.actualizarProducto()
+                        viewModel.guardar()
                     }
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
             ) {
-                Text(text = "Actualizar Producto")
+                Text(text = "Crear Producto")
             }
 
             if (estado.guardadoExitosamente) {
@@ -227,16 +301,16 @@ fun EditarScreen (
                         viewModel.onUpdateGuardadoExitoso(false)
                     },
                     title = {
-                        Text("¡Producto actualizado!")
+                        Text("¡Producto guardado!")
                     },
                     text = {
-                        Text("El producto se ha actualizado exitosamente.")
+                        Text("El producto se ha guardado exitosamente.")
                     },
                     confirmButton = {
                         TextButton(
                             onClick = {
                                 viewModel.onUpdateGuardadoExitoso(false)
-                                navController.navigate("inicio")
+                                navController.navigate("lista-productos")
                                 viewModel.limpiarCampos()
                             }
                         ) {

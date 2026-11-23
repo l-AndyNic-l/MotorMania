@@ -1,8 +1,11 @@
-package com.example.motormania.view
+package com.example.motormania.view.movimiento
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,7 +15,7 @@ import androidx.compose.material.icons.filled.AddBox
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.QrCodeScanner
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -32,25 +35,47 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.motormania.viewmodel.ProductoViewModel
+import com.example.motormania.viewmodel.VentaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListaProductosEditarScreen(
+fun ListaMovimientosEditarScreen(
     navController: NavController,
-    viewModel: ProductoViewModel
+    viewModelVentas: VentaViewModel
 ) {
-    val productos by viewModel.productos.collectAsState()
+    val ventas by viewModelVentas.ventas.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.obtenerProductos()
+        viewModelVentas.obtenerVentas()
     }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(text = "MotorMania - Admin") },
+                navigationIcon = {
+                    IconButton(
+                        onClick = {
+                            navController.navigate("inicio") {
+                                popUpTo("inicio") { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Home,
+                            contentDescription = "Inicio"
+                        )
+                    }
+                },
+                title = {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "MotorMania - Movimientos")
+                    }
+                },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                     titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
@@ -77,25 +102,27 @@ fun ListaProductosEditarScreen(
             NavigationBar {
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("inicio")},
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Inicio") },
-                    label = { Text("Inicio") }
+                    onClick = { navController.navigate("lista-movimientos") },
+                    icon = {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = Icons.Default.SwapHoriz,
+                                contentDescription = "Flecha izquierda y derecha",
+                                modifier = Modifier.padding(bottom = 0.dp)
+                            )
+                        }
+                    },
+                    label = { Text("Movimientos") }
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = {navController.navigate("lista-productos")},
-                    icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Productos") },
-                    label = { Text("Productos") }
-                )
-                NavigationBarItem(
-                    selected = false,
-                    onClick = {navController.navigate("registrar-producto")},
+                    onClick = { navController.navigate("registrar-movimiento") },
                     icon = { Icon(Icons.Default.AddBox, contentDescription = "Agregar") },
                     label = { Text("Agregar") }
                 )
                 NavigationBarItem(
                     selected = true,
-                    onClick = {navController.navigate("lista-productos-editar")},
+                    onClick = { navController.navigate("lista-movimientos-editar") },
                     icon = { Icon(Icons.Default.Edit, contentDescription = "Editar") },
                     label = { Text("Editar") }
                 )
@@ -104,7 +131,7 @@ fun ListaProductosEditarScreen(
 
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate("escaner-qr") },
+                onClick = { navController.navigate("movimiento-escaner-qr") },
                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
             ) {
@@ -116,24 +143,23 @@ fun ListaProductosEditarScreen(
         }
 
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(vertical = 16.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 16.dp)
-            ) {
-                items(productos) { producto ->
-                    ProductoCardEditar(producto, viewModel, navController)
-                }
+            item {
+                Text(
+                    text = "Ventas",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            items(ventas) { venta ->
+                VentaCardEditar(venta, viewModelVentas, navController)
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.motormania.view
+package com.example.motormania.view.producto
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -10,8 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,11 +26,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.motormania.model.ProductoUiState
+import com.example.motormania.viewmodel.ProductoViewModel
 
 @Composable
-fun ProductoCard(producto: ProductoUiState) {
+fun ProductoCardEditar(
+    producto: ProductoUiState,
+    viewModel: ProductoViewModel,
+    navController: NavController
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
@@ -84,6 +95,58 @@ fun ProductoCard(producto: ProductoUiState) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "Ubicación: Zona ${producto.zona} • Repisa ${producto.repisa} • Estante ${producto.estante}",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                if (producto.cantidad.toInt() <= producto.stockMinimo.toInt()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "⚠ Stock bajo",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                FilledTonalIconButton(
+                    onClick = {
+                        viewModel.obtenerProducto(producto.codigo)
+                        navController.navigate("editar-producto")
+                    },
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Editar ${producto.nombre}",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                FilledTonalIconButton(
+                    onClick = {
+                        viewModel.eliminarProducto(producto.codigo)
+                    },
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Eliminar ${producto.nombre}",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
             }
         }
     }

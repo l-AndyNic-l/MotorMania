@@ -8,4 +8,8 @@ data class ProductoErrores (
     val precio: String? = null,
     val cantidad: String? = null,
     val stockMinimo: String? = null,
+    val stockObjetivo: String? = null,
+    val zona: String? = null,
+    val repisa: String? = null,
+    val estante: String? = null
 )

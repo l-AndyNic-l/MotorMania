@@ -8,7 +8,10 @@ data class ProductoUiState (
     val precio: String = "",
     val cantidad: String = "",
     val stockMinimo: String = "",
-    val guardando: Boolean = false,
+    val stockObjetivo: String = "",
+    val zona: String = "",
+    val repisa: String = "",
+    val estante: String = "",
     val guardadoExitosamente: Boolean = false,
 
     val errores: ProductoErrores = ProductoErrores()

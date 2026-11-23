@@ -84,10 +84,38 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
         }
     }
 
-    fun onUpdateGuardando(valor: Boolean) {
+    fun onStockObjetivo(valor: String) {
         _estado.update {
             it.copy(
-                guardando = valor,
+                stockObjetivo = valor,
+                errores = it.errores.copy(stockObjetivo = null)
+            )
+        }
+    }
+
+    fun onZonaChange(valor: String) {
+        _estado.update {
+            it.copy(
+                zona = valor,
+                errores = it.errores.copy(zona = null)
+            )
+        }
+    }
+
+    fun onRepisaChange(valor: String) {
+        _estado.update {
+            it.copy(
+                repisa = valor,
+                errores = it.errores.copy(repisa = null)
+            )
+        }
+    }
+
+    fun onEstanteChange(valor: String) {
+        _estado.update {
+            it.copy(
+                estante = valor,
+                errores = it.errores.copy(estante = null)
             )
         }
     }
@@ -108,6 +136,9 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
         val precio = estadoActual.precio.toIntOrNull()
         val cantidad = estadoActual.cantidad.toIntOrNull()
         val stockMinimo = estadoActual.stockMinimo.toIntOrNull()
+        val stockObjetivo = estadoActual.stockObjetivo.toIntOrNull()
+        val repisa = estadoActual.repisa.toIntOrNull()
+        val estante = estadoActual.estante.toIntOrNull()
 
         val errores = ProductoErrores(
             codigo = when {
@@ -142,7 +173,35 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
                 stockMinimo == null || stockMinimo < 0 ->
                     "Debe ser un stock mínimo válido"
                 else -> null
+            },
+
+            stockObjetivo = when {
+                estadoActual.stockObjetivo.isBlank() -> "Campo obligatorio"
+                stockObjetivo == null || stockObjetivo < estadoActual.stockMinimo.toInt() ->
+                    "Debe ser un stock objetivo mayor al minímo"
+                else -> null
+            },
+
+            zona = if (estadoActual.zona.isBlank()) {
+                "Campo obligatorio"
+            } else if (estadoActual.zona.uppercase() !in listOf("A", "B", "C", "D")) {
+                "Las zonas deben ser A, B, C o D"
+            } else null,
+
+            repisa = when {
+                estadoActual.repisa.isBlank() -> "Campo obligatorio"
+                repisa == null -> "Debe ser una repisa válida"
+                estadoActual.repisa.toInt() !in 1..5 -> "Las repisas son de 1 a 5"
+                else -> null
+            },
+
+            estante = when {
+                estadoActual.estante.isBlank() -> "Campo obligatorio"
+                estante == null -> "Debe ser una repisa válida"
+                estadoActual.estante.toInt() !in 1..9 -> "Los estantes son de 1 a 9"
+                else -> null
             }
+
         )
 
         _estado.update {
@@ -156,7 +215,11 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
             errores.categoria,
             errores.precio,
             errores.cantidad,
-            errores.stockMinimo
+            errores.stockMinimo,
+            errores.stockObjetivo,
+            errores.zona,
+            errores.repisa,
+            errores.estante
         ).isEmpty()
     }
 
@@ -169,7 +232,11 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
                 categoria = "",
                 precio = "",
                 cantidad = "",
-                stockMinimo = ""
+                stockMinimo = "",
+                stockObjetivo = "",
+                zona = "",
+                repisa = "",
+                estante = ""
             )
         }
     }
@@ -197,6 +264,27 @@ class ProductoViewModel(app: Application): AndroidViewModel(app) {
             }
         }
     }
+
+    fun obtenerTodosStockMinimo() {
+        viewModelScope.launch {
+            try {
+                _productos.value = ProductoRepository(dao).obtenerTodosStockMinimo()
+            } catch (e: Exception) {
+                println("Error al obtener productos: ${e.message}")
+            }
+        }
+    }
+
+    fun obtenerPorUbicacionExacta(zona: String, repisa: String, estante: String) {
+        viewModelScope.launch {
+            try {
+                _productos.value = ProductoRepository(dao).obtenerPorUbicacionExacta(zona, repisa.toInt(), estante.toInt())
+            } catch (e: Exception) {
+                println("Error al obtener productos: ${e.message}")
+            }
+        }
+    }
+
 
     fun obtenerProducto(codigo: String) {
         viewModelScope.launch {
